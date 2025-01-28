@@ -29,7 +29,7 @@ INSERT INTO roles (title, salary, department_id)
 VALUES ('Regional Manager', 65000, 1),
         ('Assistant Regional Manager', 35000, 1),
         ('Receptionist', 30000, 4),
-        ('Regional Director of Sales',, 2),
+        ('Regional Director of Sales', 55000, 2),
         ('Chief Accountant', 50000, 3),
         ('Human Resources', 50000, 4),
         ('Accountant', 45000, 3),
