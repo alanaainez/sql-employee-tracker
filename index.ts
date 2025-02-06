@@ -14,13 +14,27 @@ function loadMainPrompts() {
         {
             type: 'list',
             name: 'select',
-            message: '',
+            message: 'Choose an action:',
             choices: [
-                {
-                name: 'View All Employees',
-                value: 'VIEW_EMPLOYEES',
-                },
+                { name: 'View All Employees', value: 'VIEW_EMPLOYEES' },
+                { name: 'Exit', value: 'EXIT' }
             ]
         }
-    ])
+    ]).then(answer => {
+        switch (answer.select) {
+            case 'VIEW_EMPLOYEES':
+                viewEmployees();
+                break;
+            case 'EXIT':
+                console.log('Goodbye!');
+                process.exit();
+        }
+    });
+}
+
+async function viewEmployees() {
+    console.log('\nFetching employees...\n');
+    const employees = await db.findAllEmployees();
+    console.table(employees);
+    loadMainPrompts();
 }
