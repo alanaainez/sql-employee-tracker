@@ -1,4 +1,4 @@
-import inquirer, { QuestionCollection } from 'inquirer';
+import inquirer from 'inquirer';
 import Db from './db/index.js';
 import { getAllDepartments, getAllRoles, getAllEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole } from './db/queries.js';
 

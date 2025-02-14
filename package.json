@@ -3,5 +3,8 @@
     "@types/inquirer": "^9.0.7",
     "inquirer": "^12.4.1",
     "pg": "^8.13.1"
+  },
+  "scripts": {
+    "start": "npx ts-node index.ts"
   }
 }
