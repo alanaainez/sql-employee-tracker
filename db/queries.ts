@@ -17,15 +17,12 @@ export async function getAllRoles() {
 // Get all employees
 export async function getAllEmployees() {
     return pool.query(`
-        SELECT employees.id, employees.first_name, employees.last_name, roles.title AS job_title,
-               departments.department_name AS department, roles.salary, 
-               COALESCE(manager.first_name || ' ' || manager.last_name, 'None') AS manager
+        SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department_name, employees.manager_id 
         FROM employees
         JOIN roles ON employees.role_id = roles.id
-        JOIN departments ON roles.department_id = departments.id
-        LEFT JOIN employees AS manager ON employees.manager_id = manager.id;
+        JOIN departments ON roles.department_id = departments.id;
     `);
-}
+  }
 
 // Add a new department
 export async function addDepartment(name: string) {

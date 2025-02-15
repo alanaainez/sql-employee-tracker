@@ -9,13 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllDepartments = getAllDepartments;
-exports.getAllRoles = getAllRoles;
-exports.getAllEmployees = getAllEmployees;
-exports.addDepartment = addDepartment;
-exports.addRole = addRole;
-exports.addEmployee = addEmployee;
-exports.updateEmployeeRole = updateEmployeeRole;
+exports.updateEmployeeRole = exports.addEmployee = exports.addRole = exports.addDepartment = exports.getAllEmployees = exports.getAllRoles = exports.getAllDepartments = void 0;
 const connection_js_1 = require("./connection.js");
 // Get all departments
 function getAllDepartments() {
@@ -23,6 +17,7 @@ function getAllDepartments() {
         return connection_js_1.pool.query('SELECT * FROM departments;');
     });
 }
+exports.getAllDepartments = getAllDepartments;
 // Get all roles
 function getAllRoles() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -33,6 +28,7 @@ function getAllRoles() {
     `);
     });
 }
+exports.getAllRoles = getAllRoles;
 // Get all employees
 function getAllEmployees() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -47,27 +43,32 @@ function getAllEmployees() {
     `);
     });
 }
+exports.getAllEmployees = getAllEmployees;
 // Add a new department
 function addDepartment(name) {
     return __awaiter(this, void 0, void 0, function* () {
         return connection_js_1.pool.query('INSERT INTO departments (department_name) VALUES ($1);', [name]);
     });
 }
+exports.addDepartment = addDepartment;
 // Add a new role
 function addRole(title, salary, departmentId) {
     return __awaiter(this, void 0, void 0, function* () {
         return connection_js_1.pool.query('INSERT INTO roles (title, salary, department_id) VALUES ($1, $2, $3);', [title, salary, departmentId]);
     });
 }
+exports.addRole = addRole;
 // Add a new employee
 function addEmployee(firstName, lastName, roleId, managerId) {
     return __awaiter(this, void 0, void 0, function* () {
         return connection_js_1.pool.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4);', [firstName, lastName, roleId, managerId]);
     });
 }
+exports.addEmployee = addEmployee;
 // Update an employee's role
 function updateEmployeeRole(employeeId, newRoleId) {
     return __awaiter(this, void 0, void 0, function* () {
         return connection_js_1.pool.query('UPDATE employees SET role_id = $1 WHERE id = $2;', [newRoleId, employeeId]);
     });
 }
+exports.updateEmployeeRole = updateEmployeeRole;

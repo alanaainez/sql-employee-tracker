@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const connection_js_1 = require("./connection.js");
 class Db {
     constructor() { }
-    query(sql_1) {
-        return __awaiter(this, arguments, void 0, function* (sql, args = []) {
+    query(sql, args = []) {
+        return __awaiter(this, void 0, void 0, function* () {
             const client = yield connection_js_1.pool.connect();
             try {
                 const result = yield client.query(sql, args);
