@@ -1,6 +1,7 @@
-import inquirer, { QuestionCollection } from 'inquirer';
-import Db from './db';
-import { getAllDepartments, getAllRoles, getAllEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole } from './db/queries';
+import inquirer from 'inquirer';
+import Db from './db'; 
+import { getAllDepartments, getAllRoles, getAllEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole } from './queries.js';
+
 const db = new Db();
 init();
 
@@ -66,11 +67,11 @@ async function handleUserChoice(choice: string) {
             break;
 
         case 'ADD_EMPLOYEE':
-            const employeeQuestions: QuestionCollection = [
+            const employeeQuestions: inquirer.Question[] = [
                 { type: 'input', name: 'firstName', message: 'Enter the employee first name:' },
                 { type: 'input', name: 'lastName', message: 'Enter the employee last name:' },
                 { type: 'number', name: 'roleId', message: 'Enter the role ID:' },
-                { type: 'input', name: 'managerId', message: 'Enter the manager ID (or leave blank):', filter: (input) => input === '' ? null : parseInt(input) }
+                { type: 'number', name: 'managerId', message: 'Enter the manager ID (or leave blank):', default: null }
             ];
             const employeeAnswers = await inquirer.prompt(employeeQuestions);
             await addEmployee(employeeAnswers.firstName, employeeAnswers.lastName, employeeAnswers.roleId, employeeAnswers.managerId);

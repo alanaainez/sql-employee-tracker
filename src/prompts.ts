@@ -8,9 +8,12 @@ export async function loadMainPrompts() {
             message: 'What would you like to do?',
             choices: [
                 { name: 'View All Employees', value: 'VIEW_EMPLOYEES' },
+                { name: 'View Employees By Manager', value: 'VIEW_EMPLOYEES' },
+                { name: 'View Employees By Department', value: 'VIEW_EMPLOYEES' },
                 { name: 'View All Departments', value: 'VIEW_DEPARTMENTS' },
                 { name: 'View All Roles', value: 'VIEW_ROLES' },
                 { name: 'Add Employee', value: 'ADD_EMPLOYEE' },
+                { name: 'Delete From Database', value: 'DELETE_FROM_DATABASE' },
                 { name: 'Exit', value: 'EXIT' }
             ]
         }

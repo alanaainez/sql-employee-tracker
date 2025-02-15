@@ -24,6 +24,16 @@ export async function getAllEmployees() {
     `);
   }
 
+// Get employees by manager
+export async function getEmployeesByManager(managerId: number) {
+    return pool.query('SELECT * FROM employees WHERE manager_id = $1;', [managerId]);
+}
+
+//Get employees by department
+export async function getEmployeesByDepartment(departmentId: number) {
+    return pool.query('SELECT * FROM employees WHERE department_id = $1;', [departmentId]);
+}
+
 // Add a new department
 export async function addDepartment(name: string) {
     return pool.query('INSERT INTO departments (department_name) VALUES ($1);', [name]);
@@ -48,4 +58,19 @@ export async function addEmployee(firstName: string, lastName: string, roleId: n
 // Update an employee's role
 export async function updateEmployeeRole(employeeId: number, newRoleId: number) {
     return pool.query('UPDATE employees SET role_id = $1 WHERE id = $2;', [newRoleId, employeeId]);
+}
+
+// Delete an employee
+export async function deleteEmployee(employeeId: number) {
+    return pool.query('DELETE FROM employees WHERE id = $1;', [employeeId]);
+}
+
+// Delete a role
+export async function deleteRole(roleId: number) {
+    return pool.query('DELETE FROM roles WHERE id = $1;', [roleId]);
+}
+
+// Delete a department
+export async function deleteDepartment(departmentId: number) {
+    return pool.query('DELETE FROM departments WHERE id = $1;', [departmentId]);
 }
