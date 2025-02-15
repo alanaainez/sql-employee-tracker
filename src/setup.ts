@@ -1,4 +1,4 @@
-import { pool } from './db/connection';
+import { pool } from '../db/connection';
 import fs from 'fs';
 
 async function resetDatabase() {

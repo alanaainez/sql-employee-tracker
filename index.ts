@@ -1,9 +1,8 @@
-import inquirer from 'inquirer';
+import inquirer, { QuestionCollection } from 'inquirer';
 import Db from './db/index.js';
 import { getAllDepartments, getAllRoles, getAllEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole } from './db/queries.js';
 
 const db = new Db();
-
 init();
 
 function init() {
@@ -68,12 +67,11 @@ async function handleUserChoice(choice: string) {
             break;
 
         case 'ADD_EMPLOYEE':
-            const employeeQuestions: QuestionCollection = [
-                { type: 'input', name: 'firstName', message: 'Enter the employee first name:' },
+            const employeeQuestions: QuestionCollection<any> = [                { type: 'input', name: 'firstName', message: 'Enter the employee first name:' },
                 { type: 'input', name: 'lastName', message: 'Enter the employee last name:' },
                 { type: 'number', name: 'roleId', message: 'Enter the role ID:' },
                 { type: 'number', name: 'managerId', message: 'Enter the manager ID (or leave blank):', default: null }
-            ];
+            ];            
             const employeeAnswers = await inquirer.prompt(employeeQuestions);
             await addEmployee(employeeAnswers.firstName, employeeAnswers.lastName, employeeAnswers.roleId, employeeAnswers.managerId);
             console.log(`Added employee: ${employeeAnswers.firstName} ${employeeAnswers.lastName}`);
