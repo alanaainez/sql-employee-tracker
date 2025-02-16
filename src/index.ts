@@ -1,7 +1,8 @@
-import inquirer from 'inquirer';
-import Db from './db'; 
-import { getAllDepartments, getAllRoles, getAllEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole } from './queries.js';
-
+import inquirer, { QuestionCollection } from 'inquirer';
+import Db from './db/db';
+import { getAllDepartments, getAllRoles, getAllEmployees, 
+    addDepartment, addRole, addEmployee, updateEmployeeRole, 
+    deleteDepartment, deleteRole, deleteEmployee } from './db/queries';
 const db = new Db();
 init();
 
@@ -17,10 +18,13 @@ function loadMainPrompts() {
             message: 'What would you like to do?',
             choices: [
                 { name: 'View All Employees', value: 'VIEW_EMPLOYEES' },
-                { name: 'View Employees By Manager', value: 'VIEW_EMPLOYEES' },
-                { name: 'View Employees By Department', value: 'VIEW_EMPLOYEES' },
+                { name: 'View Employees By Manager', value: 'VIEW_EMPLOYEES_BY_MANAGER' },
+                { name: 'View Employees By Department', value: 'VIEW_EMPLOYEES_BY_DEPARTMENT' },
                 { name: 'View All Departments', value: 'VIEW_DEPARTMENTS' },
                 { name: 'View All Roles', value: 'VIEW_ROLES' },
+                { name: 'View Total Dept. Budget', value: 'VIEW_TOTAL_BUDGET' },
+                { name: 'Add Department', value: 'ADD_DEPARTMENT' },
+                { name: 'Add Role', value: 'ADD_ROLE' },
                 { name: 'Add Employee', value: 'ADD_EMPLOYEE' },
                 { name: 'Delete From Database', value: 'DELETE_FROM_DATABASE' },
                 { name: 'Exit', value: 'EXIT' }
@@ -48,6 +52,30 @@ async function handleUserChoice(choice: string) {
             console.table(employees.rows);
             break;
 
+        case 'VIEW_TOTAL_BUDGET':
+            const budgetAnswer = await inquirer.prompt([
+                { type: 'number', name: 'departmentId', message: 'Enter the department ID to view total budget:' }
+            ]);
+            const budgetResult = await db.getUtilizedBudget(budgetAnswer.departmentId);
+            console.log(`Total utilized budget for department ID ${budgetAnswer.departmentId}: $${budgetResult.rows[0].total_budget}`);
+            break;
+
+        case 'VIEW_EMPLOYEES_BY_MANAGER':
+            const managerAnswer = await inquirer.prompt([
+                { type: 'number', name: 'managerId', message: 'Enter the manager ID to view employees:' }
+            ]);
+            const employeesByManager = await db.getEmployeesByManager(managerAnswer.managerId);
+            console.table(employeesByManager.rows);
+            break;
+
+        case 'VIEW_EMPLOYEES_BY_DEPARTMENT':
+            const departmentAnswer = await inquirer.prompt([
+                { type: 'number', name: 'departmentId', message: 'Enter the department ID to view employees:' }
+            ]);
+            const employeesByDepartment = await db.getEmployeesByDepartment(departmentAnswer.departmentId);
+            console.table(employeesByDepartment.rows);
+            break;
+
         case 'ADD_DEPARTMENT':
             const deptAnswer = await inquirer.prompt([
                 { type: 'input', name: 'name', message: 'Enter the new department name:' }
@@ -67,11 +95,11 @@ async function handleUserChoice(choice: string) {
             break;
 
         case 'ADD_EMPLOYEE':
-            const employeeQuestions: inquirer.Question[] = [
+            const employeeQuestions: QuestionCollection = [
                 { type: 'input', name: 'firstName', message: 'Enter the employee first name:' },
                 { type: 'input', name: 'lastName', message: 'Enter the employee last name:' },
                 { type: 'number', name: 'roleId', message: 'Enter the role ID:' },
-                { type: 'number', name: 'managerId', message: 'Enter the manager ID (or leave blank):', default: null }
+                { type: 'input', name: 'managerId', message: 'Enter the manager ID (or leave blank):', filter: (input) => input === '' ? null : parseInt(input) }
             ];
             const employeeAnswers = await inquirer.prompt(employeeQuestions);
             await addEmployee(employeeAnswers.firstName, employeeAnswers.lastName, employeeAnswers.roleId, employeeAnswers.managerId);
@@ -86,6 +114,44 @@ async function handleUserChoice(choice: string) {
             await updateEmployeeRole(updateAnswers.employeeId, updateAnswers.newRoleId);
             console.log(`Updated employee ID ${updateAnswers.employeeId} to role ID ${updateAnswers.newRoleId}`);
             break;
+
+            case 'DELETE_FROM_DATABASE':
+                const deleteChoice = await inquirer.prompt([
+                    { 
+                        type: 'list', 
+                        name: 'deleteOption', 
+                        message: 'What would you like to delete?', 
+                        choices: [
+                            { name: 'Department', value: 'DELETE_DEPARTMENT' },
+                            { name: 'Role', value: 'DELETE_ROLE' },
+                            { name: 'Employee', value: 'DELETE_EMPLOYEE' }
+                        ]
+                    }
+                ]);
+            
+                switch (deleteChoice.deleteOption) {
+                    case 'DELETE_DEPARTMENT':
+                        const { departmentId } = await inquirer.prompt([
+                            { type: 'number', name: 'departmentId', message: 'Enter the department ID to delete:' }
+                        ]);
+                        await deleteDepartment(departmentId);
+                        break;
+            
+                    case 'DELETE_ROLE':
+                        const { roleId } = await inquirer.prompt([
+                            { type: 'number', name: 'roleId', message: 'Enter the role ID to delete:' }
+                        ]);
+                        await deleteRole(roleId);
+                        break;
+            
+                    case 'DELETE_EMPLOYEE':
+                        const { employeeId } = await inquirer.prompt([
+                            { type: 'number', name: 'employeeId', message: 'Enter the employee ID to delete:' }
+                        ]);
+                        await deleteEmployee(employeeId);
+                        break;
+                }
+                break;     
 
         case 'EXIT':
             console.log('Goodbye!');

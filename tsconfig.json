@@ -9,7 +9,7 @@
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true
     },
-    "include": ["src", "db"],
+    "include": ["src", "src/db"],
     "exclude": ["node_modules"]
   }
   

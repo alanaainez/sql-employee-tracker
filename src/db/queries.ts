@@ -29,9 +29,24 @@ export async function getEmployeesByManager(managerId: number) {
     return pool.query('SELECT * FROM employees WHERE manager_id = $1;', [managerId]);
 }
 
-//Get employees by department
+// Get employees by department
 export async function getEmployeesByDepartment(departmentId: number) {
-    return pool.query('SELECT * FROM employees WHERE department_id = $1;', [departmentId]);
+    return pool.query(`
+        SELECT employees.id, employees.first_name, employees.last_name, roles.title 
+        FROM employees
+        JOIN roles ON employees.role_id = roles.id
+        WHERE roles.department_id = $1;
+    `, [departmentId]);
+}
+
+// Get total utilized budget of a department
+export async function getUtilizedBudget(departmentId: number) {
+    return pool.query(`
+        SELECT SUM(roles.salary) AS total_budget
+        FROM employees
+        JOIN roles ON employees.role_id = roles.id
+        WHERE roles.department_id = $1;
+    `, [departmentId]);
 }
 
 // Add a new department
@@ -60,17 +75,40 @@ export async function updateEmployeeRole(employeeId: number, newRoleId: number) 
     return pool.query('UPDATE employees SET role_id = $1 WHERE id = $2;', [newRoleId, employeeId]);
 }
 
+// Update an employee's manager
+export async function updateEmployeeManager(employeeId: number, newManagerId: number) {
+    return pool.query('UPDATE employees SET manager_id = $1 WHERE id = $2;', [newManagerId, employeeId]);
+}
+
 // Delete an employee
 export async function deleteEmployee(employeeId: number) {
-    return pool.query('DELETE FROM employees WHERE id = $1;', [employeeId]);
+    try {
+        await pool.query('DELETE FROM employees WHERE id = $1', [employeeId]);
+        console.log(`Deleted employee with ID ${employeeId}`);
+    } catch (error) {
+        const err = error as Error;
+        throw new Error(`Error deleting employee with ID ${employeeId}: ${err.message}`);
+    }
 }
 
 // Delete a role
 export async function deleteRole(roleId: number) {
-    return pool.query('DELETE FROM roles WHERE id = $1;', [roleId]);
+    try {
+        await pool.query('DELETE FROM roles WHERE id = $1;', [roleId]);
+        console.log(`Deleted role with ID ${roleId}`);
+    } catch (error) {
+        const err = error as Error;
+        throw new Error(`Error deleting role with ID ${roleId}: ${err.message}`);
+    }
 }
 
 // Delete a department
 export async function deleteDepartment(departmentId: number) {
-    return pool.query('DELETE FROM departments WHERE id = $1;', [departmentId]);
+    try {
+        await pool.query('DELETE FROM departments WHERE id = $1;', [departmentId]);
+        console.log(`Deleted department with ID ${departmentId}`);
+    } catch (error) {
+        const err = error as Error;
+        throw new Error(`Error deleting department with ID ${departmentId}: ${err.message}`);
+    }
 }
