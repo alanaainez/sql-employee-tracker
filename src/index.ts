@@ -1,8 +1,9 @@
 import inquirer, { QuestionCollection } from 'inquirer';
 import Db from './db/db';
 import { getAllDepartments, getAllRoles, getAllEmployees, 
-    addDepartment, addRole, addEmployee, updateEmployeeRole, 
+    addDepartment, addRole, addEmployee, updateEmployeeRole, updateEmployeeManager,
     deleteDepartment, deleteRole, deleteEmployee } from './db/queries';
+
 const db = new Db();
 init();
 

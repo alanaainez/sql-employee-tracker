@@ -1,15 +1,66 @@
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+import { pool } from './connection.js';
 
-dotenv.config();
+// Get all departments
+export async function getAllDepartments() {
+    return pool.query('SELECT * FROM departments;');
+}
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
-});
+// Get all roles
+export async function getAllRoles() {
+    return pool.query(`
+        SELECT roles.id, roles.title, departments.department_name, roles.salary 
+        FROM roles
+        JOIN departments ON roles.department_id = departments.id;
+    `);
+}
+
+// Get all employees
+export async function getAllEmployees() {
+    return pool.query(`
+        SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department_name, employees.manager_id 
+        FROM employees
+        JOIN roles ON employees.role_id = roles.id
+        JOIN departments ON roles.department_id = departments.id;
+    `);
+  }
+
+// Get employees by manager
+export async function getEmployeesByManager(managerId: number) {
+    return pool.query('SELECT * FROM employees WHERE manager_id = $1;', [managerId]);
+}
+
+// Get employees by department
+export async function getEmployeesByDepartment(departmentId: number) {
+    return pool.query(`
+        SELECT employees.id, employees.first_name, employees.last_name, roles.title 
+        FROM employees
+        JOIN roles ON employees.role_id = roles.id
+        WHERE roles.department_id = $1;
+    `, [departmentId]);
+}
+
+// Get total utilized budget of a department
+export async function getUtilizedBudget(departmentId: number) {
+    return pool.query(`
+        SELECT SUM(roles.salary) AS total_budget
+        FROM employees
+        JOIN roles ON employees.role_id = roles.id
+        WHERE roles.department_id = $1;
+    `, [departmentId]);
+}
+
+// Add a new department
+export async function addDepartment(name: string) {
+    return pool.query('INSERT INTO departments (department_name) VALUES ($1);', [name]);
+}
+
+// Add a new role
+export async function addRole(title: string, salary: number, departmentId: number) {
+    return pool.query(
+        'INSERT INTO roles (title, salary, department_id) VALUES ($1, $2, $3);',
+        [title, salary, departmentId]
+    );
+}
 
 // Add a new employee
 export async function addEmployee(firstName: string, lastName: string, roleId: number, managerId: number | null) {
@@ -40,24 +91,24 @@ export async function deleteEmployee(employeeId: number) {
     }
 }
 
-// Delete a department
-export async function deleteDepartment(departmentId: number) {
-    try {
-        await pool.query('DELETE FROM departments WHERE id = $1', [departmentId]);
-        console.log(`Deleted department with ID ${departmentId}`);
-    } catch (error) {
-        const err = error as Error;
-        throw new Error(`Error deleting department with ID ${departmentId}: ${err.message}`);
-    }
-}
-
 // Delete a role
 export async function deleteRole(roleId: number) {
     try {
-        await pool.query('DELETE FROM roles WHERE id = $1', [roleId]);
+        await pool.query('DELETE FROM roles WHERE id = $1;', [roleId]);
         console.log(`Deleted role with ID ${roleId}`);
     } catch (error) {
         const err = error as Error;
         throw new Error(`Error deleting role with ID ${roleId}: ${err.message}`);
+    }
+}
+
+// Delete a department
+export async function deleteDepartment(departmentId: number) {
+    try {
+        await pool.query('DELETE FROM departments WHERE id = $1;', [departmentId]);
+        console.log(`Deleted department with ID ${departmentId}`);
+    } catch (error) {
+        const err = error as Error;
+        throw new Error(`Error deleting department with ID ${departmentId}: ${err.message}`);
     }
 }
