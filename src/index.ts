@@ -124,7 +124,8 @@ async function handleUserChoice(choice: string) {
                         choices: [
                             { name: 'Department', value: 'DELETE_DEPARTMENT' },
                             { name: 'Role', value: 'DELETE_ROLE' },
-                            { name: 'Employee', value: 'DELETE_EMPLOYEE' }
+                            { name: 'Employee', value: 'DELETE_EMPLOYEE' },
+                            { name: 'Exit', value: 'EXIT' }
                         ]
                     }
                 ]);
@@ -149,6 +150,9 @@ async function handleUserChoice(choice: string) {
                             { type: 'number', name: 'employeeId', message: 'Enter the employee ID to delete:' }
                         ]);
                         await deleteEmployee(employeeId);
+                        break;
+                    case 'EXIT':
+                        console.log('Exiting delete menu.');
                         break;
                 }
                 break;     
