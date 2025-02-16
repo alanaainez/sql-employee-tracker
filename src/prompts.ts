@@ -13,6 +13,7 @@ export async function loadMainPrompts() {
                 { name: 'View All Departments', value: 'VIEW_DEPARTMENTS' },
                 { name: 'View All Roles', value: 'VIEW_ROLES' },
                 { name: 'Add Employee', value: 'ADD_EMPLOYEE' },
+                { name: 'Update Employee Role', value: 'UPDATE_EMPLOYEE' },
                 { name: 'Update Manager', value: 'UPDATE_MANAGER' },
                 { name: 'Delete From Database', value: 'DELETE_FROM_DATABASE' },
                 { name: 'Exit', value: 'EXIT' }

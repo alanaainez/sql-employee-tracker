@@ -26,6 +26,8 @@ function loadMainPrompts() {
                 { name: 'Add Department', value: 'ADD_DEPARTMENT' },
                 { name: 'Add Role', value: 'ADD_ROLE' },
                 { name: 'Add Employee', value: 'ADD_EMPLOYEE' },
+                { name: 'Update Employee Role', value: 'UPDATE_EMPLOYEE' },
+                { name: 'Update Manager', value: 'UPDATE_MANAGER' },
                 { name: 'Delete From Database', value: 'DELETE_FROM_DATABASE' },
                 { name: 'Exit', value: 'EXIT' }
             ]
@@ -115,17 +117,26 @@ async function handleUserChoice(choice: string) {
             console.log(`Updated employee ID ${updateAnswers.employeeId} to role ID ${updateAnswers.newRoleId}`);
             break;
 
-            case 'DELETE_FROM_DATABASE':
-                const deleteChoice = await inquirer.prompt([
-                    { 
-                        type: 'list', 
-                        name: 'deleteOption', 
-                        message: 'What would you like to delete?', 
-                        choices: [
-                            { name: 'Department', value: 'DELETE_DEPARTMENT' },
-                            { name: 'Role', value: 'DELETE_ROLE' },
-                            { name: 'Employee', value: 'DELETE_EMPLOYEE' },
-                            { name: 'Exit', value: 'EXIT' }
+        case 'UPDATE_MANAGER':
+            const managerAnswers = await inquirer.prompt([
+                { type: 'number', name: 'employeeId', message: 'Enter the employee ID to update manager:' },
+                { type: 'number', name: 'newManagerId', message: 'Enter the new manager ID:' }
+            ]);
+            await db.updateEmployeeManager(managerAnswers.employeeId, managerAnswers.newManagerId);
+            console.log(`Updated employee ID ${managerAnswers.employeeId} to manager ID ${managerAnswers.newManagerId}`);
+            break;
+
+        case 'DELETE_FROM_DATABASE':
+            const deleteChoice = await inquirer.prompt([
+                { 
+                  type: 'list', 
+                  name: 'deleteOption', 
+                  message: 'What would you like to delete?', 
+                  choices: [
+                        { name: 'Department', value: 'DELETE_DEPARTMENT' },
+                        { name: 'Role', value: 'DELETE_ROLE' },
+                        { name: 'Employee', value: 'DELETE_EMPLOYEE' },
+                        { name: 'Exit', value: 'EXIT' }
                         ]
                     }
                 ]);

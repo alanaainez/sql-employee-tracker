@@ -99,6 +99,15 @@ export default class Db {
     }
   }
 
+  async updateEmployeeManager(employeeId: number, newManagerId: number) {
+    try {
+      return await this.query('UPDATE employees SET manager_id = $1 WHERE id = $2;', [newManagerId, employeeId]);
+    } catch (error) {
+      console.error(`Error updating manager for employee ${employeeId}:`, error);
+      throw error;
+    }
+  }
+
   async close() {
     await pool.end();
   }
