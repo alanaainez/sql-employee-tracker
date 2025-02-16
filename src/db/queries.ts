@@ -112,3 +112,5 @@ export async function deleteDepartment(departmentId: number) {
         throw new Error(`Error deleting department with ID ${departmentId}: ${err.message}`);
     }
 }
+
+//export { deleteDepartment, deleteRole, deleteEmployee };

@@ -2,7 +2,10 @@ import inquirer, { QuestionCollection } from 'inquirer';
 import Db from './db/db';
 import { getAllDepartments, getAllRoles, getAllEmployees, 
     addDepartment, addRole, addEmployee, updateEmployeeRole, updateEmployeeManager,
-    deleteDepartment, deleteRole, deleteEmployee } from './db/queries';
+    deleteDepartment, deleteRole, deleteEmployee } from './db/queries.js';
+
+//import * as queries from './db/queries.js';
+//console.log(queries);
 
 const db = new Db();
 init();
@@ -123,7 +126,7 @@ async function handleUserChoice(choice: string) {
                 { type: 'number', name: 'employeeId', message: 'Enter the employee ID to update manager:' },
                 { type: 'number', name: 'newManagerId', message: 'Enter the new manager ID:' }
             ]);
-            await db.updateEmployeeManager(managerAnswers.employeeId, managerAnswers.newManagerId);
+            await updateEmployeeManager(managerAnswers.employeeId, managerAnswers.newManagerId);
             console.log(`Updated employee ID ${managerAnswers.employeeId} to manager ID ${managerAnswers.newManagerId}`);
             break;
 
