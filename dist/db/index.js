@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const connection_js_1 = require("./connection.js");
 class Db {
     constructor() { }
-    query(sql_1) {
-        return __awaiter(this, arguments, void 0, function* (sql, args = []) {
+    query(sql, args = []) {
+        return __awaiter(this, void 0, void 0, function* () {
             const client = yield connection_js_1.pool.connect();
             try {
                 const result = yield client.query(sql, args);
@@ -22,19 +22,6 @@ class Db {
             finally {
                 client.release();
             }
-        });
-    }
-    findAllEmployees() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.query(`
-            SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.department_name AS department, roles.salary, 
-            CONCAT(manager.first_name, ' ', manager.last_name) AS manager
-            FROM employees
-            LEFT JOIN roles ON employees.role_id = roles.id
-            LEFT JOIN departments ON roles.department_id = departments.id
-            LEFT JOIN employees AS manager ON employees.manager_id = manager.id
-            ORDER BY employees.id;
-        `);
         });
     }
 }

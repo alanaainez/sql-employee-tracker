@@ -1,4 +1,4 @@
-import { pool } from './connection.js';
+import { pool } from '../db/connection';
 
 // Get all departments
 export async function getAllDepartments() {
@@ -22,7 +22,7 @@ export async function getAllEmployees() {
         JOIN roles ON employees.role_id = roles.id
         JOIN departments ON roles.department_id = departments.id;
     `);
-  }
+}
 
 // Get employees by manager
 export async function getEmployeesByManager(managerId: number) {
@@ -81,36 +81,21 @@ export async function updateEmployeeManager(employeeId: number, newManagerId: nu
 }
 
 // Delete an employee
-export async function deleteEmployee(employeeId: number) {
-    try {
-        await pool.query('DELETE FROM employees WHERE id = $1', [employeeId]);
-        console.log(`Deleted employee with ID ${employeeId}`);
-    } catch (error) {
-        const err = error as Error;
-        throw new Error(`Error deleting employee with ID ${employeeId}: ${err.message}`);
-    }
+export async function deleteEmployee(employeeId: number): Promise<void> {
+    const query = `DELETE FROM employees WHERE id = $1`;
+    await pool.query(query, [employeeId]);
 }
 
 // Delete a role
-export async function deleteRole(roleId: number) {
-    try {
-        await pool.query('DELETE FROM roles WHERE id = $1;', [roleId]);
-        console.log(`Deleted role with ID ${roleId}`);
-    } catch (error) {
-        const err = error as Error;
-        throw new Error(`Error deleting role with ID ${roleId}: ${err.message}`);
-    }
+export async function deleteRole(roleId: number): Promise<void> {
+    const query = `DELETE FROM roles WHERE id = $1`;
+    await pool.query(query, [roleId]);
 }
 
 // Delete a department
-export async function deleteDepartment(departmentId: number) {
-    try {
-        await pool.query('DELETE FROM departments WHERE id = $1;', [departmentId]);
-        console.log(`Deleted department with ID ${departmentId}`);
-    } catch (error) {
-        const err = error as Error;
-        throw new Error(`Error deleting department with ID ${departmentId}: ${err.message}`);
-    }
+export async function deleteDepartment(departmentId: number): Promise<void> {
+    const query = `DELETE FROM departments WHERE id = $1`;
+    await pool.query(query, [departmentId]);
 }
 
-//export { deleteDepartment, deleteRole, deleteEmployee };
+// Ensure all functions are exported
